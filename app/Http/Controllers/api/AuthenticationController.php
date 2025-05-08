@@ -107,11 +107,18 @@ class AuthenticationController extends Controller {
                 'email' => $email
             ]);
 
+            $data->assignRole('customer');
+            $data->givePermissionTo('manage profile');
+
             return response()->json([
                 'status' => true,
                 'message' => 'Berhasil register pengguna',
-                'data' => $data
-            ]);
+                'data' => $data,
+                'permission' => $data->getAllPermissions(),
+                'role' => $data->getRoleNames(),
+                'created_at' => $data->created_at,
+                'updated_at' => $data->updated_at
+            ], 201);
 
         } catch (\Throwable $th) {
             return response()->json([
