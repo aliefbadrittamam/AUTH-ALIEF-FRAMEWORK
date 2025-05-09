@@ -13,6 +13,8 @@ class RoleController extends Controller
 {
     public function store(Request $request)
     {
+        $credentials = $request->only('name', 'password');
+
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
@@ -31,19 +33,30 @@ class RoleController extends Controller
 
     public function store_permission(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+      
+      try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+            ]);
 
-        $permission = Permission::create([
-            'name' => $request->name,
-            'guard_name' => env('AUTH_GUARD', 'web'),
-        ]);
+            $permission = Permission::create([
+                'name' => $request->name,
+                'guard_name' => env('AUTH_GUARD', 'web'),
+            ]);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Permission created successfully',
-            'data' => $permission,
-        ]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Permission created successfully',
+                'data' => $permission,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ]);
+        }
+      
+      
+      
     }
 }

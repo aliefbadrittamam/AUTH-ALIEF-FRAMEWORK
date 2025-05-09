@@ -21,6 +21,16 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        User::factory()->create([
+            'name' => 'admin',
+            'email' => 'admin123@gmail.com',
+            'password' => bcrypt('admin123'),
+        ]);
+
+        // give admin role super admin
+        $user = User::where('name', 'admin')->first();
+        $user->assignRole('super-admin');
+
 
         $admin = Role::create(['name' => 'admin']);
         $superAdmin = Role::create(['name' => 'super-admin']);
@@ -32,11 +42,7 @@ class DatabaseSeeder extends Seeder
         $manage_profile = Permission::create(['name' => 'manage profile']);
 
         // Memberikan permissions ke role
-        $superAdmin->givePermissionTo([
-            'manage roles',
-            'manage products',
-            'manage profile'
-        ]);
+        $superAdmin->givePermissionTo('manage roles,');
         $admin->givePermissionTo('manage products');
         $customer->givePermissionTo('manage profile');
 

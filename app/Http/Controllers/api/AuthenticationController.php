@@ -76,7 +76,9 @@ class AuthenticationController extends Controller {
             return response()->json([
                 'status' => true,
                 'message' => 'Berhasil mendapatkan data pengguna',
-                'data' => $request->user()
+                'data' => $request->user(),
+                'role' => $request->user()->getRoleNames()->first(),
+                'permission' => $request->user()->getAllPermissions(),
             ]);
         } catch (\Throwable $th) {
             return response()->json([
