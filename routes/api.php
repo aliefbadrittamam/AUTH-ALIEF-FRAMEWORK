@@ -6,6 +6,7 @@ use App\Http\Controllers\api\RoleController;
 use App\Http\Controllers\api\GuruKelasController;
 use App\Http\Controllers\api\MataPelajaranController;
 use App\Http\Controllers\api\AuthenticationController;
+use App\Http\Controllers\api\SiswaController;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'login']);
@@ -34,6 +35,18 @@ Route::prefix('/matapelajaran')->group(function () {
     Route::put('/update', [MataPelajaranController::class, 'updateMataPelajaran']);
     Route::delete('/hapus', [MataPelajaranController::class, 'deleteMataPelajaran']);
 })->middleware('auth:sanctum');
+
+
+Route::prefix('siswa')->group(function () {
+    Route::get('/getdata', [SiswaController::class, 'GetSiswa']);
+    Route::post('/tambah', [SiswaController::class, 'SetSiswa']);
+    Route::put('/update', [SiswaController::class, 'updateSiswa']);
+    Route::delete('/hapus', [SiswaController::class, 'deleteSiswa']);
+})->middleware('auth:sanctum');
+
+
+
+
 
 
 

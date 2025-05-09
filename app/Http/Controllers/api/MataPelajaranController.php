@@ -16,7 +16,7 @@ class MataPelajaranController extends Controller
                     $data_mapel = MataPelajaran::with('guru')->get(),
                     'status' => true,
                     'message' => 'Berhasil mendapatkan data mata pelajaran',
-                    'data' => 'berikut adalah data mata pelajaran di database' . MataPelajaran::all(),
+                    // 'data' => 'berikut adalah data mata pelajaran di database' . MataPelajaran::all(),
                 ],
                 200,
             );

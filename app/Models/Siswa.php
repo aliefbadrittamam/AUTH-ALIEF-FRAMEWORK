@@ -11,17 +11,10 @@ class Siswa extends Model
     protected $primaryKey = 'id_siswa';
 
     protected $fillable = [
-        'nama',
-        'nis',
-        'kelas',
-        'alamat',
-        'tanggal_lahir',
-        'jenis_kelamin',
-        'no_telepon',
-        'tempat_lahir',
-        'email',
-        'guru_kelas_id'
+        'nama', 'nis', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir',
+        'alamat', 'no_telepon', 'email', 'guru_kelas_id',
     ];
+    
 
     public function guruKelas()
     {
