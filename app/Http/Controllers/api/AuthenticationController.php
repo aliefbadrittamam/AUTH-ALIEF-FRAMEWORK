@@ -54,7 +54,9 @@ class AuthenticationController extends Controller {
                     'status' => true,
                     'message' => 'Berhasil login',
                     'data' => $token,
-                    'user' => $user
+                    'user' => $user,
+                    'role' => $user->getRoleNames(),
+                    'permission' => $user->getAllPermissions(),
                 ]);
             }
 
