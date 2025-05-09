@@ -111,26 +111,42 @@ class GuruKelasController extends Controller
     }
     
 
-    public function HapusDataGuru(Request $request){
-        try {
-           
-            $request->validate([
-                'id' => 'required|integer|exists:guru_kelas,id',
-            ], [
-                'id.required' => 'ID harus diisi!',
-                'id.exists' => 'ID tidak ditemukan!',
-            ]);
+  
 
-            $guru = guru_kelas::find($request->id);
-            $data_terhapus = guru_kelas::find($request->id);
-            $guru->delete();
+public function HapusDataGuru(Request $request)
+{
+    try {
+        // Validasi input
+        $request->validate([
+            'id' => 'required|integer|exists:guru_kelas,id_guru_kelas',
+        ], [
+            'id.required' => 'ID harus diisi!',
+            'id.exists' => 'ID tidak ditemukan!',
+        ]);
 
+        $data_terhapus = guru_kelas::find($request->id);
+
+        if (!$data_terhapus) {
             return response()->json([
-                'status' => true,
-                'message' => 'Berhasil menghapus data guru kelas',
-            ]);
-        } catch (\Throwable $th) {
-            //throw $th;
+                'status' => false,
+                'message' => 'Data tidak ditemukan.',
+            ], 404);
         }
+
+        $data_terhapus->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Berhasil menghapus data guru kelas',
+            'data_terhapus' => $data_terhapus,
+        ]);
+    } catch (\Throwable $th) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Gagal menghapus data guru kelas',
+            'error' => $th->getMessage(),
+        ], 500);
     }
+}
+
 }
