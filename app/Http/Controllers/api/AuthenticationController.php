@@ -36,13 +36,13 @@ class AuthenticationController extends Controller {
     {
         try {
 
-            // $request->validate([
-            //     'name' => 'required|string|min:8',
-            //     'password' => 'required|string',
-            // ], [
-            //     'name.required' => 'Nama harus diisi!',
-            //     'name.min' => 'Nama minimal 8 karakter',
-            // ]);
+            $request->validate([
+                'name' => 'required|string|min:4',
+                'password' => 'required|string',
+            ], [
+                'name.required' => 'Nama harus diisi!',
+                'name.min' => 'Nama minimal 8 karakter',
+            ]);
 
             $credentials = $request->only('name', 'password');
 

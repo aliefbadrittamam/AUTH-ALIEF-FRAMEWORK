@@ -4,8 +4,10 @@ namespace Database\Seeders;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Models\User;
+use Database\Seeders\GurukelasSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,6 +23,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        $this->call([
+            GurukelasSeeder::class,
+        ]);
 
         $admin = Role::create(['name' => 'admin']);
         $superAdmin = Role::create(['name' => 'super-admin']);
