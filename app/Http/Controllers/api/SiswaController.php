@@ -85,37 +85,61 @@ public function SetSiswa(Request $request)
 public function updateSiswa(Request $request)
 {
     try {
-        $request->validate([
+        //  cari id untuk memastikan ada 
+        $siswa = Siswa::findOrFail($request->id);
+
+        // Validasi field yang dikirim saja
+        $rules = [
             'id' => 'required|integer|exists:siswa,id_siswa',
-            'nama' => 'required|string|max:255',
-            'nis' => 'required|string|unique:siswa,nis,' . $request->id . ',id_siswa',
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'tempat_lahir' => 'required|string|max:255',
-            'tanggal_lahir' => 'required|date',
-            'alamat' => 'required|string|max:500',
-            'no_telepon' => 'nullable|string|max:20',
-            'email' => 'nullable|email|unique:siswa,email,' . $request->id . ',id_siswa',
-            'guru_kelas_id' => 'nullable|integer|exists:guru_kelas,id_guru_kelas',
-        ], [
+        ];
+
+        if ($request->has('nama')) {
+            $rules['nama'] = 'string|max:255';
+        }
+
+        if ($request->has('nis')) {
+            $rules['nis'] = 'string|unique:siswa,nis,' . $request->id . ',id_siswa';
+        }
+
+        if ($request->has('jenis_kelamin')) {
+            $rules['jenis_kelamin'] = 'in:Laki-laki,Perempuan';
+        }
+
+        if ($request->has('tempat_lahir')) {
+            $rules['tempat_lahir'] = 'string|max:255';
+        }
+
+        if ($request->has('tanggal_lahir')) {
+            $rules['tanggal_lahir'] = 'date';
+        }
+
+        if ($request->has('alamat')) {
+            $rules['alamat'] = 'string|max:500';
+        }
+
+        if ($request->has('no_telepon')) {
+            $rules['no_telepon'] = 'nullable|string|max:20';
+        }
+
+        if ($request->has('email')) {
+            $rules['email'] = 'email|unique:siswa,email,' . $request->id . ',id_siswa';
+        }
+
+        if ($request->has('guru_kelas_id')) {
+            $rules['guru_kelas_id'] = 'nullable|integer|exists:guru_kelas,id_guru_kelas';
+        }
+
+        // Jalankan validasi
+        $validated = $request->validate($rules, [
             'id.required' => 'ID siswa harus diisi!',
             'id.exists' => 'Data siswa tidak ditemukan!',
             'nis.unique' => 'NIS sudah digunakan!',
             'email.unique' => 'Email sudah digunakan!',
         ]);
 
-        $siswa = Siswa::find($request->id);
-
-        $siswa->update([
-            'nama' => $request->nama,
-            'nis' => $request->nis,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'alamat' => $request->alamat,
-            'no_telepon' => $request->no_telepon,
-            'email' => $request->email,
-            'guru_kelas_id' => $request->guru_kelas_id,
-        ]);
+        // Update data yang dikirim saja
+        $siswa->fill($validated);
+        $siswa->save();
 
         return response()->json([
             'status' => true,
@@ -131,6 +155,7 @@ public function updateSiswa(Request $request)
         ], 500);
     }
 }
+
 
 public function deleteSiswa(Request $request)
 {

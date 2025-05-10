@@ -66,20 +66,18 @@ class GuruKelasController extends Controller
     }
     
 
-    public function UpdateDataGuru(Request $request){
+    public function UpdateDataGuru(Request $request)
+    {
         try {
+            // 
             $request->validate([
                 'id' => 'required|integer|exists:guru_kelas,id_guru_kelas',
-                'nama' => 'required|string|max:255',
-                'nip' => 'required|string|max:255|unique:guru_kelas,nip,' . $request->id . ',id_guru_kelas',
-                'kelas' => 'required|string|max:255',
-            ],[
+            ], [
                 'id.required' => 'ID guru harus dikirim.',
-                'nama.required' => 'Nama harus diisi!',
-                'nip.required' => 'NIP harus diisi!',
-                'kelas.required' => 'Kelas harus diisi!',
+                'id.exists' => 'Data guru kelas tidak ditemukan.',
             ]);
     
+            // Cari guru berdasarkan ID
             $guru = guru_kelas::where('id_guru_kelas', $request->id)->first();
     
             if (!$guru) {
@@ -89,11 +87,29 @@ class GuruKelasController extends Controller
                 ], 404);
             }
     
-            $guru->update([
-                'nama' => $request->nama,
-                'nip' => $request->nip,
-                'kelas' => $request->kelas,
+            // Siapkan validasi dinamis untuk field lain
+            $rules = [];
+    
+            if ($request->has('nama')) {
+                $rules['nama'] = 'string|max:255';
+            }
+    
+            if ($request->has('nip')) {
+                $rules['nip'] = 'string|max:255|unique:guru_kelas,nip,' . $request->id . ',id_guru_kelas';
+            }
+    
+            if ($request->has('kelas')) {
+                $rules['kelas'] = 'string|max:255';
+            }
+    
+            // Validasi field tambahan kalau ada
+            $validated = $request->validate($rules, [
+                'nip.unique' => 'NIP sudah digunakan!',
             ]);
+    
+            // Update hanya data yang dikirim
+            $guru->fill($validated);
+            $guru->save();
     
             return response()->json([
                 'status' => true,

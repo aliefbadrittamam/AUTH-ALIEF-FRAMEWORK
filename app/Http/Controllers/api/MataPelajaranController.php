@@ -70,25 +70,33 @@ public function SetMataPelajaran(Request $request)
 public function updateMataPelajaran(Request $request)
 {
     try {
-        $request->validate([
+        // Cek id
+        $mapel = MataPelajaran::findOrFail($request->id);
+
+        // dinamis validate
+        $rules = [
             'id' => 'required|integer|exists:mata_pelajaran,id_mata_pelajaran',
-            'nama' => 'required|string|max:255',
-            'guru_kelas_id' => 'required|integer|exists:guru_kelas,id_guru_kelas',
-        ], [
+        ];
+
+        if ($request->has('nama')) {
+            $rules['nama'] = 'string|max:255';
+        }
+
+        if ($request->has('guru_kelas_id')) {
+            $rules['guru_kelas_id'] = 'integer|exists:guru_kelas,id_guru_kelas';
+        }
+
+        // Jalankan validasi
+        $validated = $request->validate($rules, [
             'id.required' => 'ID mata pelajaran harus diisi!',
             'id.exists' => 'Data mata pelajaran tidak ditemukan!',
-            'nama.required' => 'Nama mata pelajaran harus diisi!',
-            'guru_kelas_id.required' => 'Guru kelas harus dipilih!',
             'guru_kelas_id.exists' => 'Guru kelas tidak ditemukan!',
             'guru_kelas_id.integer' => 'ID guru kelas harus berupa angka!',
         ]);
 
-        $mapel = MataPelajaran::find($request->id);
-
-        $mapel->update([
-            'nama' => $request->nama,
-            'guru_kelas_id' => $request->guru_kelas_id,
-        ]);
+        // Update data yang dikirim saja
+        $mapel->fill($validated);
+        $mapel->save();
 
         return response()->json([
             'status' => true,
