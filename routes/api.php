@@ -1,12 +1,14 @@
 <?php
 
+use App\Http\Controllers\api\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\RoleController;
+use App\Http\Controllers\api\SiswaController;
+use App\Http\Controllers\api\TestingController;
 use App\Http\Controllers\api\GuruKelasController;
 use App\Http\Controllers\api\MataPelajaranController;
 use App\Http\Controllers\api\AuthenticationController;
-use App\Http\Controllers\api\SiswaController;
 
 Route::post('/register', [AuthenticationController::class, 'register']);
 Route::post('/login', [AuthenticationController::class, 'login']);
@@ -24,7 +26,7 @@ Route::prefix('guru')->middleware(['auth:sanctum'])->group(function () {
         ->middleware('role:admin|guru');
     Route::post('/tambah', [GuruKelasController::class, 'SetDataGuru'])
         ->middleware('role:admin');
-    Route::post('/update', [GuruKelasController::class, 'UpdateDataGuru'])
+    Route::put('/update', [GuruKelasController::class, 'UpdateDataGuru'])
         ->middleware('role:admin');
     Route::delete('/hapus', [GuruKelasController::class, 'HapusDataGuru'])
         ->middleware('role:admin');
@@ -51,6 +53,9 @@ Route::prefix('siswa')->middleware('auth:sanctum')->group(function () {
     Route::delete('/hapus', [SiswaController::class, 'deleteSiswa'])
         ->middleware('role:admin');
 });
+
+
+Route::get('/testing', [TestController::class, 'index']);
 
 
 
