@@ -56,6 +56,8 @@ Route::prefix('siswa')->middleware('auth:sanctum')->group(function () {
 
 
 Route::get('/testing', [TestController::class, 'index']);
+Route::post('/login-simat', [TestController::class, 'LoginSimat']);
+Route::get('/GetDataSimat', [TestController::class, 'GetDataSimat']);
 
 
 

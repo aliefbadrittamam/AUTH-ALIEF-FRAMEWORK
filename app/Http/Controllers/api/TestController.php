@@ -34,4 +34,44 @@ class TestController extends Controller
             ], 500);
         }
     }
+
+
+    public function LoginSimat(Request $request){
+        try {
+            $client = new Client();
+            $username = $request->username;
+            $password = $request->password;
+            $res = $client->request('POST', 'https://api.unira.ac.id/v1/token',[
+                'form_params' => [
+                    'username' => $username,
+                    'password' => $password,
+                ],
+            ]);
+    
+            $body = json_decode($res->getBody(), true);
+
+            return response()->json($body   );
+    
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function GetDataSimat(Request $request){
+      
+        $token = $request->bearerToken();
+        $client = new Client();
+        $res = $client->request('GET', 'https://api.unira.ac.id/v1/saya', [ // Change to GET and correct the URL
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+            ],
+        ])->getBody();
+// 
+        // $body = json_decode($res->getBody(), true);
+        return json_decode($res);
+    }
 }
